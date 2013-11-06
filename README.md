@@ -6,26 +6,24 @@ A collecton of python scripts for geo-science plus some utilities to be used fro
 
 Notebook used for the  Climate forcing UseCase :
 
-http://nbviewer.ipython.org/urls/raw.github.com/epifanio/ecoop/master/notebook/ecoop_t1.ipynb
 
-List of external  dependencies :
+- [clean](http://nbviewer.ipython.org/urls/raw.github.com/epifanio/ecoop/master/notebook/ecoop_t1.ipynb)
 
-paramiko
+- [executed](http://nbviewer.ipython.org/7307864)
 
-qrcode
+List of python packages :
 
-ipython
+* paramiko
+* qrcode
+* ipython
+* envoy
+* numpy 
+* scipy
+* statsmodels
+* pandas 
+* matplotlib
 
-envoy
+external dependencies :
 
-numpy 
-
-scipy
-
-statsmodels
-
-pandas 
-
-matplotlib
-
-(pip installable)
+* latex-live
+* jist
