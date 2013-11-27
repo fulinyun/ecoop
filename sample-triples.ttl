@@ -2,6 +2,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
@@ -11,7 +12,8 @@ ecoop:notebook-run-0 a ecoop:IPythonNotebookRun ;
 	dct:description "Climate Forcing notebook run on 2013-11-26T21:41:10-05:00." ;
 	prov:startedAtTime "2013-11-26T21:41:10-05:00"^^xsd:dateTime ;
 	prov:endedAtTime "2013-11-26T22:06:46-05:00"^^xsd:dateTime ;
-	prov:wasAssociatedWith ecoop:notebook-0 .
+	prov:used ecoop:notebook-0 ;
+	prov:wasAssociatedWith ecoop:LinyunFu .
 
 ecoop:notebook-0 a ecoop:IPythonNotebook ;
 	dct:title "Climate Forcing" ;
@@ -19,4 +21,20 @@ ecoop:notebook-0 a ecoop:IPythonNotebook ;
 	dct:hasVersion "0" ;
 	dcat:accessURL "https://github.com/epifanio/ecoop/blob/master/notebook/ecoop_t1.ipynb"^^xsd:anyURI .
 
+ecoop:LinyunFu a prov:Agent, foaf:Person ;
+	foaf:name "Linyun Fu" ;
+	foaf:familyName "Fu" ;
+	foaf:givenName "Linyun" ;
+	foaf:mbox "ful2@rpi.edu" ;
+	foaf:phone "518-423-5771" ;
+	ecoop:address "110 8th Street, Troy, NY 12180, USA" ;
+	ecoop:homepageURL "http://tw.rpi.edu/web/person/LinyunFu"^^xsd:anyURI ;
+	ecoop:isMemberOf ecoop:RPI .
+
+ecoop:RPI a foaf:Organization ;
+	foaf:name "Rensselaer Polytechnic Institute" ;
+	foaf:phone "518-276-0000" ;
+	ecoop:address "110 8th Street, Troy, NY 12180, USA" ;
+	ecoop:homepageURL "http://www.rpi.edu"^^xsd:anyURI ;
+	ecoop:hasMember ecoop:LinyunFu .
 
