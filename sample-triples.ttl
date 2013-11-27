@@ -1,0 +1,19 @@
+@prefix ecoop: <> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ecoop:notebook-run-0 a ecoop:IPythonNotebookRun ;
+	dct:title "Climate Forcing 2013-11-26T21:41:10-05:00" ;
+	dct:description "Climate Forcing notebook run on 2013-11-26T21:41:10-05:00." ;
+	prov:startedAtTime "2013-11-26T21:41:10-05:00"^^xsd:dateTime ;
+	prov:endedAtTime "2013-11-26T22:06:46-05:00"^^xsd:dateTime ;
+	prov:wasAssociatedWith ecoop:notebook-0 .
+
+ecoop:notebook-0 a ecoop:IPythonNotebook ;
+	dct:title "Climate Forcing" ;
+	dct:description "Climate Forcing notebook" ;
+	dct:hasVersion "0" ;
+	dcat:accessURL "https://github.com/epifanio/ecoop/blob/master/notebook/ecoop_t1.ipynb"^^xsd:anyURI .
+
+
