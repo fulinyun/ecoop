@@ -1,5 +1,44 @@
+#!/bin/bash
+
+###############################################################################
+#
+#
+# Project: ECOOP, sponsored by The National Science Foundation
+# Purpose: this code is part of the Cyberinfrastructure developed for the ECOOP project
+#                http://tw.rpi.edu/web/project/ECOOP
+#                from the TWC - Tetherless World Constellation
+#                            at RPI - Rensselaer Polytechnic Institute
+#                            founded by NSF
+#
+# Author:   Massimo Di Stefano , distem@rpi.edu -
+#                http://tw.rpi.edu/web/person/MassimoDiStefano
+#
+###############################################################################
+# Copyright (c) 2008-2014 Tetherless World Constellation at Rensselaer Polytechnic Institute
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+###############################################################################
+
+﻿np=`cat /proc/cpuinfo | grep processor | wc -l`
+
 # PYTHON
 
+CURRENTDIR=${PWD}
 BUILD=epilib
 PREFIX=/home/$USER/Envs/env1
 
@@ -10,17 +49,20 @@ mkdir -p $TEMPBUILD/src
 
 cd $TEMPBUILD 
 export PATH=$PREFIX/bin:$PATH
+export LD_LIBRARY_PATH=$PREFIX/lib:$PREFIX/lib64:$LD_LIBRARY_PATH
 
-wget http://python.org/ftp/python/2.7.5/Python-2.7.5.tar.bz2
-tar xf Python-2.7.5.tar.bz2
-cd Python-2.7.5
-./configure --prefix=$PREFIX >> ../python_configure.log
-make -j 8 >> ../python_build.log
+wget http://python.org/ftp/python/2.7.6/Python-2.7.6.tar.xz
+tar xpvf Python-2.7.6.tar.xz
+cd Python-2.7.6
+
+export CFLAGS="-fPIC"
+./configure --prefix=$PREFIX --enable-shared >> ../python_configure.log
+make -j $np >> ../python_build.log
 make altinstall >> ../python_install.log
 make distclean > /dev/null 2>&1
 cd $TEMPBUILD
-mv Python-2.7.5.tar.bz2 $TEMPBUILD/tarball
-mv Python-2.7.5 $TEMPBUILD/src
+mv Python-2.7.6.tar.xz $TEMPBUILD/tarball
+mv Python-2.7.6 $TEMPBUILD/src
 
 export PATH=$PREFIX/bin:$PATH
 
@@ -56,8 +98,17 @@ echo "installing scipy"
 $PREFIX/bin/pip install scipy  >> pip.log
 echo "installing sphinx"
 $PREFIX/bin/pip install sphinx  >> pip.log
+
 echo "installing matplotlib"
-$PREFIX/bin/pip install matplotlib  >> pip.log
+git clone https://github.com/matplotlib/matplotlib.git
+cd matplotlib
+$PREFIX/bin/python setup.py install
+cd ..
+mv matplotlib $TEMPBUILD/src
+
+#echo "installing matplotlib"
+#$PREFIX/bin/pip install matplotlib  >> pip.log
+
 echo "installing pyzmq"
 $PREFIX/bin/pip install pyzmq  >> pip.log
 echo "installing tornado"
@@ -66,24 +117,34 @@ echo "installing envoy"
 $PREFIX/bin/pip install envoy  >> pip.log
 echo "installing qrcode"
 $PREFIX/bin/pip install qrcode  >> pip.log
+echo "installing requests"
+$PREFIX/bin/pip install requests  >> pip.log
+echo "installing owslib"
+$PREFIX/bin/pip install owslib  >> pip.log
 
+echo "installing husl"
+$PREFIX/bin/pip install husl  >> pip.log
+echo "installing moss"
+$PREFIX/bin/pip install moss  >> pip.log
+echo "installing seaborn"
+$PREFIX/bin/pip install seaborn  >> pip.log
 
 cd $TEMPBUILD
-wget http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.11.tar.gz
-tar -zxf hdf5-1.8.11.tar.gz 
-cd hdf5-1.8.11
+wget http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.12.tar.gz
+tar -zxf hdf5-1.8.12.tar.gz
+cd hdf5-1.8.12
 ./configure --prefix=$PREFIX/ --enable-shared --enable-hl >> ../hdf5_configure.log
-make -j 8 >> ../hdf5_build.log
+make -j $np >> ../hdf5_build.log
 make install >> ../hdf5_install.log
 make distclean > /dev/null 2>&1
 cd $TEMPBUILD
-mv hdf5-1.8.11.tar.gz $TEMPBUILD/tarball
-mv hdf5-1.8.11 $TEMPBUILD/src
+mv hdf5-1.8.12.tar.gz $TEMPBUILD/tarball
+mv hdf5-1.8.12 $TEMPBUILD/src
 wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4.3.0.tar.gz
 tar -zxf netcdf-4.3.0.tar.gz
 cd netcdf-4.3.0
 LDFLAGS=-L$PREFIX/lib CPPFLAGS=-I$PREFIX/include ./configure --enable-netcdf-4 --enable-dap --enable-shared --prefix=$PREFIX >> ../netcdf_configure.log
-make -j 8 >> ../netcdf_build.log
+make -j $np >> ../netcdf_build.log
 make install >> ../netcdf_install.log
 make distclean > /dev/null 2>&1
 cd $TEMPBUILD
@@ -95,7 +156,7 @@ wget ftp://ftp.unidata.ucar.edu/pub/udunits/udunits-2.1.24.tar.gz
 tar -zxf udunits-2.1.24.tar.gz
 cd udunits-2.1.24
 ./configure --prefix=$PREFIX >> ../udunits_configure.log
-make -j 8
+make -j $np
 make install
 cd $TEMPBUILD
 mv udunits-2.1.24.tar.gz $TEMPBUILD/tarball
@@ -110,6 +171,20 @@ $PREFIX/bin/python setup.py install >> ../pyinstall.log
 rm -rf build
 cd $TEMPBUILD
 mv netcdf4-python $TEMPBUILD/src
+
+
+export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe/
+export LD_LIBRARY_PATH=/u01/app/oracle/product/11.2.0/xe/lib:$LD_LIBRARY_PATH
+wget http://softlayer-dal.dl.sourceforge.net/project/cx-oracle/5.1.2/cx_Oracle-5.1.2.tar.gz
+tar -zxf cx_Oracle-5.1.2.tar.gz
+cd cx_Oracle-5.1.2
+$PREFIX/bin/python setup.py install >> ../pyinstall.log
+rm -rf build
+cd $TEMPBUILD
+mv cx_Oracle-5.1.2.tar.gz $TEMPBUILD/tarball
+mv cx_Oracle-5.1.2 $TEMPBUILD/src
+
+
 
 echo "installing h5py"
 $PREFIX/bin/pip install h5py >> pip.log
@@ -131,6 +206,21 @@ echo "installing pyke"
 $PREFIX/bin/pip install pyke  >> pip.log
 echo "installing mock"
 $PREFIX/bin/pip install mock  >> pip.log
+echo "installing sqlalchemy"
+$PREFIX/bin/pip install sqlalchemy  >> pip.log
+echo "installing tempdir"
+$PREFIX/bin/pip install tempdir  >> pip.log
+
+echo "installing pysqlite"
+$PREFIX/bin/pip install pysqlite  >> pip.log
+
+echo "installing pycsw"
+$PREFIX/bin/pip install pycsw  >> pip.log
+
+
+echo "installing sympy"
+$PREFIX/bin/pip install sympy  >> pip.log
+
 
 
 wget --no-check-certificate -c --progress=dot:mega \
@@ -140,15 +230,65 @@ tar xzf grib_api-1.9.16.tar.gz
 cd grib_api-1.9.16
 export CFLAGS="-O2 -fPIC"
 ./configure --enable-python --prefix=$PREFIX/
-make -j 8
+make -j $np
 make install
 make distclean
+cd $TEMPBUILD
 mv grib_api-1.9.16.tar.gz $TEMPBUILD/tarball 
 mv grib_api-1.9.16 $TEMPBUILD/src
 
 echo "$PREFIX/lib/python2.7/site-packages/grib_api" > gribapi.pth
 cp gribapi.pth $PREFIX/lib/python2.7/site-packages/
 
+git clone https://github.com/activepapers/activepapers-python.git
+cd activepapers-python
+$PREFIX/bin/python setup.py install >> ../pyinstall.log
+rm -rf build
+cd $TEMPBUILD
+mv activepapers-python $TEMPBUILD/src
+
+echo "installing scikit-learn"
+$PREFIX/bin/pip install scikit-learn  >> pip.log
+
+echo "installing scikit-image"
+$PREFIX/bin/pip install scikit-image  >> pip.log
+
+echo "installing sympy"
+$PREFIX/bin/pip install sympy  >> pip.log
+
+echo "install mpld3"
+git clone https://github.com/jakevdp/mpld3.git
+cd mpld3
+$PREFIX/bin/python setup.py install
+rm -rf build
+cd $TEMPBUILD
+mv mpld3 $TEMPBUILD/src
+
+#https://github.com/jakevdp/ipywidgets.git
+git clone https://github.com/jakevdp/ipywidgets.git
+cd ipywidgets
+$PREFIX/bin/python setup.py install
+rm -rf build
+cd $TEMPBUILD
+mv ipywidgets $TEMPBUILD/src
+
+
+
+git clone https://github.com/epmoyer/ipy_table.git
+cd ipy_table
+$PREFIX/bin/python setup.py install >> ../pyinstall.log
+rm -rf build
+cd $TEMPBUILD
+mv ipy_table $TEMPBUILD/src
+
+# think about ipython extension / profiles (grass binding, network interfaces)
+#
+
+git clone https://github.com/ContinuumIO/bokeh.git
+cd bokeh
+$PREFIX/bin/python setup.py install >> ../pyinstall.log
+cd ..
+mv bokeh $TEMPBUILD/src
 
 git clone https://github.com/ipython/ipython
 cd ipython
@@ -161,4 +301,7 @@ ipython profile create default
 ipython profile create ecoop --ipython-dir=$PREFIX/.ipython --parallel
 
 mkdir -p /home/$USER/Envs/notebooks/
-cp ipython.sh $PREFIX/bin  /home/$USER/Envs/notebooks/
+cp $CURRENTDIR/ipython.sh $PREFIX/bin
+
+
+

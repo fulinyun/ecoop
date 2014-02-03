@@ -34,33 +34,12 @@
 # DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-echo "install python sci*"
-./install_python.sh
-echo "install gis - basemap"
-./install_gis.sh
-echo "install SQL"
-./install_sql.sh
-echo "install gdal"
-./install_gdal.sh
-echo "install ghc"
-./install_ghc.sh
-echo "install postgis"
-./install_postgis.sh
-echo "install grass"
-./install_grass.sh
-echo "install "octave""
-./install_octave.sh
-echo "install R"
-./install_R.sh
-echo "install R libs"
-./install_R_lib.sh
+yum -y install gcc gcc-c++ gcc-gfortran blas-devel lapack-devel zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel \
+freetype-devel libpng-devel svn git python-devel ruby texinfo texinfo-tex \
+libxml2-devel libcurl-devel libtiff-devel mesa-libGLU-devel mesa-libGLw-devel cairo-devel pcre-devel ImageMagick-devel \
+ImageMagick-c++-devel gnuplot-latex gsl-devel gtk2-devel java-1.7.0-openjdk-devel fftw-devel rubygems ruby-devel  >> yuminstall_devlibs.log
+yum -y groupinstall "Development tools" >> yuminstall_devtools.log
+gem install jist jist >> yuminstall_gems.log
 
-#PREFIX=/home/$USER/Envs/env1
 
-#export PATH=$PREFIX/bin:$PATH
-#R --no-save < installRpackages.r
-#R --no-save < install_spatial_view.r
 
-cp ipython.sh /home/$USER/Envs/env1/bin/
-
-#./install_R_lib.sh

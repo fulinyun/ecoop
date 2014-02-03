@@ -34,33 +34,38 @@
 # DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-echo "install python sci*"
-./install_python.sh
-echo "install gis - basemap"
-./install_gis.sh
-echo "install SQL"
-./install_sql.sh
-echo "install gdal"
-./install_gdal.sh
-echo "install ghc"
-./install_ghc.sh
-echo "install postgis"
-./install_postgis.sh
-echo "install grass"
-./install_grass.sh
-echo "install "octave""
-./install_octave.sh
-echo "install R"
-./install_R.sh
-echo "install R libs"
-./install_R_lib.sh
+﻿np=`cat /proc/cpuinfo | grep processor | wc -l`
 
-#PREFIX=/home/$USER/Envs/env1
+# PYTHON
 
-#export PATH=$PREFIX/bin:$PATH
-#R --no-save < installRpackages.r
-#R --no-save < install_spatial_view.r
+CURRENTDIR=${PWD}
+BUILD=epilib
+PREFIX=/home/$USER/Envs/env1
 
-cp ipython.sh /home/$USER/Envs/env1/bin/
+TEMPBUILD=/home/$USER/$BUILD
+mkdir -p $TEMPBUILD
+mkdir -p $TEMPBUILD/tarball
+mkdir -p $TEMPBUILD/src
 
-#./install_R_lib.sh
+cd $TEMPBUILD
+export PATH=$PREFIX/bin:$PATH
+export LD_LIBRARY_PATH=$PREFIX/lib:$PREFIX/lib64:$LD_LIBRARY_PATH
+
+### json-ld
+
+git clone https://github.com/digitalbazaar/pyld.git
+cd pyld
+$PREFIX/bin/python setup.py install >> ../pyinstall.log
+rm -rf build
+cd $TEMPBUILD
+mv pyld $TEMPBUILD/src
+
+echo "installing rdflib"
+$PREFIX/bin/pip install rdflib >> pip.log
+
+git clone https://github.com/RDFLib/rdflib-jsonld.git
+cd rdflib-jsonld
+$PREFIX/bin/python setup.py install >> ../pyinstall.log
+rm -rf build
+cd $TEMPBUILD
+mv rdflib-jsonld $TEMPBUILD/src

@@ -34,33 +34,76 @@
 # DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-echo "install python sci*"
-./install_python.sh
-echo "install gis - basemap"
-./install_gis.sh
-echo "install SQL"
-./install_sql.sh
-echo "install gdal"
-./install_gdal.sh
-echo "install ghc"
-./install_ghc.sh
-echo "install postgis"
-./install_postgis.sh
-echo "install grass"
-./install_grass.sh
-echo "install "octave""
-./install_octave.sh
-echo "install R"
-./install_R.sh
-echo "install R libs"
-./install_R_lib.sh
+﻿np=`cat /proc/cpuinfo | grep processor | wc -l`
 
-#PREFIX=/home/$USER/Envs/env1
+BUILD=epilib
+PREFIX=/home/$USER/Envs/env1
 
-#export PATH=$PREFIX/bin:$PATH
-#R --no-save < installRpackages.r
-#R --no-save < install_spatial_view.r
+TEMPBUILD=/home/$USER/$BUILD
 
-cp ipython.sh /home/$USER/Envs/env1/bin/
+mkdir -p $TEMPBUILD
+mkdir -p $TEMPBUILD/tarball
+mkdir -p $TEMPBUILD/src
 
-#./install_R_lib.sh
+cd $TEMPBUILD
+export PATH=$PREFIX/bin:$PATH
+
+
+git clone --depth 1 git://git.videolan.org/x264.git
+cd x264
+./configure --prefix=$PREFIX --enable-static
+make -j $np
+make install
+make distclean
+
+
+cd $TEMPBUILD
+git clone --depth 1 git://git.code.sf.net/p/opencore-amr/fdk-aac
+cd fdk-aac
+autoreconf -fiv
+./configure --prefix=$PREFIX --disable-shared
+make -j $np
+make install
+make distclean
+
+cd $TEMPBUILD
+wget http://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
+tar xzvf lame-3.99.5.tar.gz
+cd lame-3.99.5
+./configure --prefix=$PREFIX --enable-nasm --disable-shared
+make -j $np
+make install
+make distclean
+
+
+cd $TEMPBUILD
+wget http://downloads.xiph.org/releases/opus/opus-1.0.3.tar.gz
+tar xzvf opus-1.0.3.tar.gz
+cd opus-1.0.3
+./configure --prefix=$PREFIX --disable-shared
+make -j $np
+make install
+make distclean
+
+cd $TEMPBUILD
+git clone --depth 1 http://git.chromium.org/webm/libvpx.git
+cd libvpx
+./configure --prefix=$PREFIX --disable-examples
+make -j $np
+make install
+make clean
+
+cd $TEMPBUILD
+git clone --depth 1 git://source.ffmpeg.org/ffmpeg
+cd ffmpeg
+PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
+export PKG_CONFIG_PATH
+./configure --prefix=$PREFIX \
+  --extra-cflags="-I$PREFIX/include" --extra-ldflags="-L$PREFIX/lib" \
+  --extra-libs="-ldl" --enable-gpl --enable-libass --enable-libfdk-aac \
+  --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx \
+  --enable-libx264 --enable-nonfree --enable-x11grab
+make -j $np
+make install
+make distclean
+hash -r
